@@ -47,6 +47,7 @@ export class Parser {
     const joined_srg_lines = joined_srg.split('\r\n');
     const mdRe = new RegExp('^MD: (.*) \\(.*\\).* (.*) \\((.*)\\)(.*)$');
     const fdRe = new RegExp('^FD: (.*) (.*)$');
+    const syntheticMdRe = new RegExp('^access\\$\\d+$');
     const methods: MD[] = [];
     const fields: FD[] = [];
     for (const line of joined_srg_lines) {
@@ -70,6 +71,9 @@ export class Parser {
         const path = pathA.slice(0, -1).join('.');
         const params = this.parseParam(mdA[3]);
         const mdInfo = methodsMap.get(srg);
+        if (syntheticMdRe.exec(srg)) {
+          continue;
+        }
 
         if (mdInfo === undefined) {
           methods.push(new MD(mdA[1].replace('/', '.'), srg, srg, 0, '', path, params, mdA[4], false));
