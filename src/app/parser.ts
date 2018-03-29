@@ -42,11 +42,11 @@ export class Parser {
     const constructors = joined_exc.split('\r\n')
       .map(line => constructorRe.exec(line))
       .filter(a => a !== null)
-      .map(a => new MD('', a[2], 0, '', a[1].replace(/\//g, '.'), this.parseParam(a[3]), 'V', true));
+      .map(a => new MD('', '', a[2], 0, '', a[1].replace(/\//g, '.'), this.parseParam(a[3]), 'V', true));
 
     const joined_srg_lines = joined_srg.split('\r\n');
-    const mdRe = new RegExp('^MD: .* \\(.*\\).* (.*) \\((.*)\\)(.*)$');
-    const fdRe = new RegExp('^FD: .* (.*)$');
+    const mdRe = new RegExp('^MD: (.*) \\(.*\\).* (.*) \\((.*)\\)(.*)$');
+    const fdRe = new RegExp('^FD: (.*) (.*)$');
     const methods: MD[] = [];
     const fields: FD[] = [];
     for (const line of joined_srg_lines) {
@@ -54,27 +54,27 @@ export class Parser {
       } else if (line.startsWith('CL')) {
       } else if (line.startsWith('FD')) {
         const fdA = fdRe.exec(line);
-        const pathA = fdA[1].split('/');
+        const pathA = fdA[2].split('/');
         const srg = pathA[pathA.length - 1];
         const path = pathA.slice(0, -1).join('.');
         const fdInfo = fieldsMap.get(srg);
         if (fdInfo === undefined) {
-          fields.push(new FD(srg, srg, 0, '', path));
+          fields.push(new FD(fdA[1].replace('/', '.'), srg, srg, 0, '', path));
         } else {
-          fields.push(new FD(srg, fdInfo[0], fdInfo[1], fdInfo[2], path));
+          fields.push(new FD(fdA[1].replace('/', '.'), srg, fdInfo[0], fdInfo[1], fdInfo[2], path));
         }
       } else if (line.startsWith('MD')) {
         const mdA = mdRe.exec(line);
-        const pathA = mdA[1].split('/');
+        const pathA = mdA[2].split('/');
         const srg = pathA[pathA.length - 1];
         const path = pathA.slice(0, -1).join('.');
-        const params = this.parseParam(mdA[2]);
+        const params = this.parseParam(mdA[3]);
         const mdInfo = methodsMap.get(srg);
 
         if (mdInfo === undefined) {
-          methods.push(new MD(srg, srg, 0, '', path, params, mdA[3], false));
+          methods.push(new MD(mdA[1].replace('/', '.'), srg, srg, 0, '', path, params, mdA[4], false));
         } else {
-          methods.push(new MD(srg, mdInfo[0], mdInfo[1], mdInfo[2], path, params, mdA[3], false));
+          methods.push(new MD(mdA[1].replace('/', '.'), srg, mdInfo[0], mdInfo[1], mdInfo[2], path, params, mdA[4], false));
         }
       }
     }

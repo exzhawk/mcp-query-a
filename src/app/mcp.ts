@@ -1,5 +1,5 @@
 export class MD {
-  // notch: string;
+  notch: string;
   srg: string;
   side: number;
   desc: string;
@@ -10,7 +10,8 @@ export class MD {
   init: boolean;
   selected = false;
 
-  constructor(srg, name, side, desc, path, params, ret, init) {
+  constructor(notch, srg, name, side, desc, path, params, ret, init) {
+    this.notch = notch;
     this.srg = srg;
     this.side = side;
     this.desc = desc;
@@ -23,14 +24,15 @@ export class MD {
 }
 
 export class FD {
-  // notch: string;
+  notch: string;
   srg: string;
   side: number;
   desc: string;
   name: string;
   path: string;
 
-  constructor(srg, name, side, desc, path) {
+  constructor(notch, srg, name, side, desc, path) {
+    this.notch = notch;
     this.srg = srg;
     this.side = side;
     this.desc = desc;

@@ -25,6 +25,10 @@
   <mat-drawer-content>
     <div *ngIf="selectedMethod">
       <mat-list>
+        <h3 matSubheader>notch</h3>
+        <mat-list-item>
+          {{selectedMethod.notch}}
+        </mat-list-item>
         <h3 matSubheader>srg</h3>
         <mat-list-item>
           {{selectedMethod.srg}}
