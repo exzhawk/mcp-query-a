@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   public keyword: string;
   public clientHeight = document.body.clientHeight;
   public selectedMethod: MD;
+  public sideMapping = new Map([[0, 'Client'], [1, 'Server'], [2, 'Both']]);
 
   constructor(private http: HttpClient,
               private media: ObservableMedia,

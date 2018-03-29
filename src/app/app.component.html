@@ -37,6 +37,10 @@
         <mat-list-item>
           {{selectedMethod.name}}
         </mat-list-item>
+        <h3 matSubheader>side</h3>
+        <mat-list-item>
+          {{sideMapping.get(selectedMethod.side)}}
+        </mat-list-item>
         <h3 matSubheader>desc</h3>
         <mat-list-item *ngIf="selectedMethod.desc">
           {{selectedMethod.desc}}
