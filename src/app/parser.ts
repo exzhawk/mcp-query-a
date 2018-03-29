@@ -60,9 +60,9 @@ export class Parser {
         const path = pathA.slice(0, -1).join('.');
         const fdInfo = fieldsMap.get(srg);
         if (fdInfo === undefined) {
-          fields.push(new FD(fdA[1].replace('/', '.'), srg, srg, 0, '', path));
+          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, srg, 0, '', path));
         } else {
-          fields.push(new FD(fdA[1].replace('/', '.'), srg, fdInfo[0], fdInfo[1], fdInfo[2], path));
+          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, fdInfo[0], fdInfo[1], fdInfo[2], path));
         }
       } else if (line.startsWith('MD')) {
         const mdA = mdRe.exec(line);
@@ -76,9 +76,9 @@ export class Parser {
         }
 
         if (mdInfo === undefined) {
-          methods.push(new MD(mdA[1].replace('/', '.'), srg, srg, 0, '', path, params, mdA[4], false));
+          methods.push(new MD(mdA[1].replace(/\//g, '.'), srg, srg, 0, '', path, params, mdA[4], false));
         } else {
-          methods.push(new MD(mdA[1].replace('/', '.'), srg, mdInfo[0], mdInfo[1], mdInfo[2], path, params, mdA[4], false));
+          methods.push(new MD(mdA[1].replace(/\//g, '.'), srg, mdInfo[0], mdInfo[1], mdInfo[2], path, params, mdA[4], false));
         }
       }
     }
