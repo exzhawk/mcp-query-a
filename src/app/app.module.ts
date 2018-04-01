@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 
-import {AppComponent} from './app.component';
+import {AppComponent, TypeTransPipe} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 import {
@@ -10,6 +10,7 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatMenuModule,
   MatSidenavModule,
   MatSnackBarModule,
   MatToolbarModule
@@ -24,7 +25,8 @@ import {environment} from '../environments/environment';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TypeTransPipe,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +41,7 @@ import {environment} from '../environments/environment';
     MatIconModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatMenuModule,
     FlexLayoutModule,
     VirtualScrollModule,
     ClipboardModule,

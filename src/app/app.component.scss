@@ -6,6 +6,10 @@
 
   mat-toolbar {
     font: unset;
+    padding-left: 4px;
+    mat-form-field {
+      flex: 1;
+    }
   }
   mat-drawer-container {
     flex: 1;
@@ -34,7 +38,12 @@
         margin-bottom: 64px;
         mat-list-item {
           overflow-x: auto;
-          overflow-y: hidden
+          overflow-y: hidden;
+          height: unset;
+          margin-bottom: 12px;
+          pre {
+            margin: 0 0;
+          }
         }
       }
     }

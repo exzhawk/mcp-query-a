@@ -7,61 +7,86 @@
   <mat-form-field>
     <input type="text" matInput [(ngModel)]="keyword" placeholder="filter" (ngModelChange)="updateFilter()">
   </mat-form-field>
+  <button mat-button [matMenuTriggerFor]="mcVersionMenu" fxShow="true" fxShow.lt-md="false">
+    <mat-icon>history</mat-icon>
+    {{mcVersion}}:{{mcpVersion}}
+  </button>
+  <button mat-icon-button [matMenuTriggerFor]="mcVersionMenu" fxShow="false" fxShow.lt-md="true">
+    <mat-icon>history</mat-icon>
+  </button>
+  <mat-menu #mcVersionMenu="matMenu" [style.display]="'none'">
+    <button mat-menu-item *ngFor="let ver of mcpVersions" (click)="updateVer(ver)">
+      {{ver.mc}}:{{ver.mcp}}
+    </button>
+  </mat-menu>
 </mat-toolbar>
 <mat-drawer-container>
   <mat-drawer mode="side" [opened]="opened" #drawer ngClass.gt-sm="fix-width" ngClass.lt-md="full-width">
-    <mat-nav-list *ngIf="filteredMethods">
-      <virtual-scroll [items]="filteredMethods" (update)="viewPortItems=$event" [style.height]="(clientHeight-64)+'px'">
-        <a mat-list-item *ngFor="let method of viewPortItems" (click)="selectMethod(method)">
-          <h3 matLine>{{method.srg}}</h3>
+    <mat-nav-list *ngIf="filteredList">
+      <virtual-scroll [items]="filteredList" (update)="viewPortItems=$event" [style.height]="(clientHeight-64)+'px'">
+        <a mat-list-item *ngFor="let item of viewPortItems" (click)="selectItem(item)">
+          <h3 matLine>{{getType(item)}}: <strong>{{item.srg}}</strong></h3>
           <p matLine>
-            <span>{{method.path}}.{{method.name}}</span>
+            <span>{{item.path?item.path+'.':''}}{{item.name}}</span>
           </p>
-          <mat-icon *ngIf="method===selectedMethod">keyboard_arrow_right</mat-icon>
+          <mat-icon *ngIf="item===selectedItem">keyboard_arrow_right</mat-icon>
         </a>
       </virtual-scroll>
     </mat-nav-list>
   </mat-drawer>
   <mat-drawer-content>
-    <div *ngIf="selectedMethod">
+    <div *ngIf="selectedItem">
       <mat-list>
-        <h3 matSubheader>notch</h3>
-        <mat-list-item>
-          {{selectedMethod.notch}}
-        </mat-list-item>
         <h3 matSubheader>srg</h3>
         <mat-list-item>
-          {{selectedMethod.srg}}
+          {{selectedItem.srg}}
         </mat-list-item>
         <h3 matSubheader>name</h3>
         <mat-list-item>
-          {{selectedMethod.name}}
+          {{selectedItem.name}}
         </mat-list-item>
         <h3 matSubheader>side</h3>
         <mat-list-item>
-          {{sideMapping.get(selectedMethod.side)}}
+          {{sideMapping.get(selectedItem.side)}}
         </mat-list-item>
-        <h3 matSubheader>desc</h3>
-        <mat-list-item *ngIf="selectedMethod.desc">
-          {{selectedMethod.desc}}
-        </mat-list-item>
-        <h3 matSubheader>path</h3>
-        <mat-list-item>
-          {{selectedMethod.path}}
-        </mat-list-item>
-        <h3 matSubheader>params</h3>
-        <mat-list-item *ngFor="let param of selectedMethod.params">
-          {{param}}
-        </mat-list-item>
-        <h3 matSubheader>return</h3>
-        <mat-list-item>
-          {{selectedMethod.ret}}
-        </mat-list-item>
-        <h3 matSubheader>Access Transformer</h3>
-        <mat-list-item ngxClipboard [style.cursor]="'pointer'" (click)="onCopied()"
-                       cbContent="public {{selectedMethod.path}} {{selectedMethod.srg}}({{selectedMethod.params.join('')}}){{selectedMethod.ret}} #{{selectedMethod.name}}{{'\n'}}">
-          <pre>public {{selectedMethod.path}} {{selectedMethod.srg}}({{selectedMethod.params.join('')}}){{selectedMethod.ret}} #{{selectedMethod.name}}</pre>
-        </mat-list-item>
+        <div *ngIf="selectedItem.desc">
+          <h3 matSubheader>desc</h3>
+          <mat-list-item>
+            <div [innerHTML]="selectedItem.desc" style="white-space: pre-wrap">
+            </div>
+          </mat-list-item>
+        </div>
+        <div *ngIf="selectedItem.path">
+          <h3 matSubheader>path</h3>
+          <mat-list-item>
+            {{selectedItem.path}}
+          </mat-list-item>
+        </div>
+        <div *ngIf="selectedItem.notch">
+          <h3 matSubheader>notch</h3>
+          <mat-list-item>
+            {{selectedItem.notch}}
+          </mat-list-item>
+        </div>
+        <div *ngIf="selectedItem.params">
+          <h3 matSubheader>params</h3>
+          <mat-list-item *ngFor="let param of selectedItem.params">
+            <pre>{{param | typeTrans}}</pre>
+          </mat-list-item>
+        </div>
+        <div *ngIf="selectedItem.ret">
+          <h3 matSubheader>return</h3>
+          <mat-list-item>
+            {{selectedItem.ret | typeTrans}}
+          </mat-list-item>
+        </div>
+        <div *ngIf="selectedItem.params">
+          <h3 matSubheader>Access Transformer</h3>
+          <mat-list-item ngxClipboard [style.cursor]="'pointer'" (click)="onCopied()"
+                         cbContent="public {{selectedItem.path}} {{selectedItem.srg}}({{selectedItem.params.join('')}}){{selectedItem.ret}} #{{selectedItem.name}}{{'\n'}}">
+            <pre>public {{selectedItem.path}}{{selectedItem.init?'.'+selectedItem.name:''}} {{selectedItem.srg}}({{selectedItem.params.join('')}}){{selectedItem.ret}} #{{selectedItem.name}}</pre>
+          </mat-list-item>
+        </div>
       </mat-list>
     </div>
   </mat-drawer-content>

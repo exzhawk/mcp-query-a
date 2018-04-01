@@ -1,29 +1,11 @@
-import {FD, MD} from './mcp';
-import * as Papa from 'papaparse/papaparse.min.js';
+import {FD, MD, PM} from './mcp';
+import * as Papa from 'papaparse/papaparse.js';
 
 export class Parser {
-  static javaTypesMapping = new Map<string, string>([
-    ['Z', 'boolean'],
-    ['B', 'byte'],
-    ['C', 'char'],
-    ['S', 'short'],
-    ['I', 'int'],
-    ['J', 'long'],
-    ['F', 'float'],
-    ['D', 'double'],
-    ['V', 'void'],
-  ]);
   static paramRe = new RegExp('\\[*(?:L[^;]*;|[ZBCSIJFDV])', 'g');
-  static arrayDetectRe = new RegExp('^(\\[*)(.*)$');
 
   static parse(joined_exc: string, joined_srg: string, fields_csv: string, methods_csv: string, params_csv: string) {
     const fieldsMap = new Map<string, string[]>();
-    fields_csv.split('\r\n')
-      .slice(1)
-      .map(line => {
-        const [srg, name, side, desc] = line.split(',');
-        fieldsMap.set(srg, [name, side, desc]);
-      });
     Papa.parse(fields_csv, {header: true})['data'].forEach((d) => {
       fieldsMap.set(d['searge'], [d['name'], d['side'], d['desc']]);
     });
@@ -31,23 +13,20 @@ export class Parser {
     Papa.parse(methods_csv, {header: true})['data'].forEach((d) => {
       methodsMap.set(d['searge'], [d['name'], d['side'], d['desc']]);
     });
-    const paramsMap = new Map<string, string[]>();
-    params_csv.split('\r\n')
-      .slice(1)
-      .map(line => {
-        const [srg, name, side] = line.split(',');
-        paramsMap.set(srg, [name, side]);
-      });
-
+    const pms: PM[] = [];
+    // const paramsMap = new Map<string, string[]>();
+    Papa.parse(params_csv, {header: true})['data'].forEach((d) => {
+      pms.push(new PM(d['param'], d['name'], parseInt(d['side'], 10)));
+    });
     const constructorRe = new RegExp('(.*)\\/([^/]*)\\.<init>\\((.*)\\)V=\\|.*');
-    const constructors = joined_exc.split('\r\n')
+    const newlineRe = new RegExp('\\r?\\n');
+    const constructors = joined_exc.split(newlineRe)
       .map(line => constructorRe.exec(line))
       .filter(a => a !== null)
-      .map(a => new MD('', '', a[2], 0, '',
+      .map(a => new MD('', '<init>', a[2], -1, '',
         a[1].replace(/\//g, '.'), this.parseParams(a[3]),
-        this.transformType('V'), true));
-
-    const joined_srg_lines = joined_srg.split('\r\n');
+        'V', true));
+    const joined_srg_lines = joined_srg.split(newlineRe);
     const mdRe = new RegExp('^MD: (.*) \\(.*\\).* (.*) \\((.*)\\)(.*)$');
     const fdRe = new RegExp('^FD: (.*) (.*)$');
     const syntheticMdRe = new RegExp('^access\\$\\d+$');
@@ -63,9 +42,11 @@ export class Parser {
         const path = pathA.slice(0, -1).join('.');
         const fdInfo = fieldsMap.get(srg);
         if (fdInfo === undefined) {
-          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, srg, 0, '', path));
+          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, srg,
+            -1, '', path));
         } else {
-          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, fdInfo[0], parseInt(fdInfo[1], 10), fdInfo[2], path));
+          fields.push(new FD(fdA[1].replace(/\//g, '.'), srg, fdInfo[0],
+            parseInt(fdInfo[1], 10), fdInfo[2].replace(/\\n/g, '\n'), path));
         }
       } else if (line.startsWith('MD')) {
         const mdA = mdRe.exec(line);
@@ -81,24 +62,29 @@ export class Parser {
         if (mdInfo === undefined) {
           methods.push(
             new MD(mdA[1].replace(/\//g, '.'),
-              srg, srg, 0, '', path, params, this.transformType(mdA[4]), false)
+              srg, srg, -1, '', path, params, mdA[4], false)
           );
         } else {
           methods.push(
             new MD(mdA[1].replace(/\//g, '.'),
-              srg, mdInfo[0], parseInt(mdInfo[1], 10), mdInfo[2], path, params, this.transformType(mdA[4]), false)
+              srg, mdInfo[0], parseInt(mdInfo[1], 10), mdInfo[2].replace(/\\n/g, '\n'),
+              path, params, mdA[4], false)
           );
         }
       }
     }
-    return methods.sort(this.sortBySrg);
+    // return methods.sort(this.sortBySrg);
+    return [].concat(methods.sort(this.sortBySrg),
+      fields.sort(this.sortBySrg),
+      constructors.sort(this.sortBySrg),
+      pms.sort(this.sortBySrg));
   }
 
   static parseParams(paramsString: string): string[] {
     if (paramsString.length === 0) {
       return [];
     }
-    return paramsString.match(this.paramRe).map(s => this.transformType(s));
+    return paramsString.match(this.paramRe);
   }
 
   static sortBySrg(a, b): number {
@@ -123,15 +109,4 @@ export class Parser {
     }
   }
 
-  static transformType(paramString: string): string {
-    let transformed = '';
-    const [, arrayD, rest] = this.arrayDetectRe.exec(paramString);
-    transformed += '[]'.repeat(arrayD.length);
-    if (this.javaTypesMapping.has(rest)) {
-      transformed += this.javaTypesMapping.get(rest);
-    } else if (rest.startsWith('L') && rest.endsWith(';')) {
-      transformed += rest.slice(1, -1).replace(/\//g, '.');
-    }
-    return transformed;
-  }
 }
