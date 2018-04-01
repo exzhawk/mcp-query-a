@@ -102,7 +102,25 @@ export class Parser {
   }
 
   static sortBySrg(a, b): number {
-    return (a.srg < b.srg) ? -1 : (a.srg > b.srg) ? 1 : 0;
+    if (a.srg !== b.srg) {
+      if (a.srg < b.srg) {
+        return -1;
+      } else {
+        return 1;
+      }
+    } else if (a.path !== undefined && b.path !== undefined && a.path !== b.path) {
+      if (a.path < b.path) {
+        return -1;
+      } else {
+        return 1;
+      }
+    } else {
+      if (a.name < b.name) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
   }
 
   static transformType(paramString: string): string {
