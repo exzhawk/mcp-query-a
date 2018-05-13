@@ -8,7 +8,7 @@ export class MD {
   params: string[];
   ret: string;
   init: boolean;
-  selected = false;
+  type: string;
 
   constructor(notch, srg, name, side, desc, path, params, ret, init) {
     this.notch = notch;
@@ -20,6 +20,7 @@ export class MD {
     this.params = params;
     this.ret = ret;
     this.init = init;
+    this.type = init ? 'Constructor' : 'Function';
   }
 }
 
@@ -30,6 +31,7 @@ export class FD {
   desc: string;
   name: string;
   path: string;
+  type: string;
 
   constructor(notch, srg, name, side, desc, path) {
     this.notch = notch;
@@ -38,6 +40,7 @@ export class FD {
     this.desc = desc;
     this.name = name;
     this.path = path;
+    this.type = 'Field';
   }
 }
 
@@ -45,11 +48,13 @@ export class PM {
   srg: string;
   name: string;
   side: number;
+  type: string;
 
   constructor(srg, name, side) {
     this.srg = srg;
     this.name = name;
     this.side = side;
+    this.type = 'Param';
   }
 }
 
@@ -78,22 +83,6 @@ export class Utils {
     ['V', 'void'],
   ]);
   static arrayDetectRe = new RegExp('^(\\[*)(.*)$');
-
-  static getType(item: (MD | FD | PM)): string {
-    if (item instanceof MD) {
-      if (item.init === true) {
-        return 'Constructor';
-      } else {
-        return 'Function';
-      }
-
-    } else if (item instanceof FD) {
-      return 'Field';
-    } else {
-      return 'Param';
-    }
-
-  }
 
   static transformType(paramString: string): string {
     let transformed: string;

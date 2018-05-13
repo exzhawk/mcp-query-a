@@ -25,7 +25,6 @@ export class AppComponent implements OnInit {
   public mcVersion: string;
   public mcpVersion: string;
   public mcpVersions = CONST.mcpVersions;
-  public getType = Utils.getType;
 
   constructor(private http: HttpClient,
               private media: ObservableMedia,
