@@ -11,6 +11,7 @@ import {
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatProgressSpinnerModule,
   MatSidenavModule,
   MatSnackBarModule,
   MatToolbarModule
@@ -42,6 +43,7 @@ import {environment} from '../environments/environment';
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
     FlexLayoutModule,
     VirtualScrollModule,
     ClipboardModule,

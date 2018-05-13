@@ -96,7 +96,7 @@ export class AppComponent implements OnInit {
       this.mcVersion = ver.mc;
       this.mcpVersion = ver.mcp;
       this.itemList = [];
-      this.filteredList = [];
+      this.filteredList = undefined;
       this.selectedItem = undefined;
       this.updateSavedVer();
       this.ngOnInit();
@@ -110,8 +110,10 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize() {
-    this.clientHeight = document.body.clientHeight;
-    this.virtualScroll.refresh();
+    if (this.virtualScroll) {
+      this.clientHeight = document.body.clientHeight;
+      this.virtualScroll.refresh();
+    }
   }
 }
 

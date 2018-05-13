@@ -17,6 +17,9 @@
     width: 100%;
     display: flex;
     mat-drawer {
+      mat-spinner{
+        margin: auto;
+      }
       mat-nav-list {
         padding-top: 0;
         mat-list-item {

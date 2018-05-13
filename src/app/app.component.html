@@ -22,7 +22,8 @@
 </mat-toolbar>
 <mat-drawer-container>
   <mat-drawer mode="side" [opened]="opened" #drawer ngClass.gt-sm="fix-width" ngClass.lt-md="full-width">
-    <mat-nav-list *ngIf="filteredList">
+    <mat-spinner *ngIf="filteredList===undefined"></mat-spinner>
+    <mat-nav-list *ngIf="filteredList!==undefined && filteredList.length!==0">
       <virtual-scroll [items]="filteredList" (update)="viewPortItems=$event" [style.height]="(clientHeight-64)+'px'">
         <a mat-list-item *ngFor="let item of viewPortItems" (click)="selectItem(item)">
           <h3 matLine>{{item.type}}: <strong>{{item.srg}}</strong></h3>
