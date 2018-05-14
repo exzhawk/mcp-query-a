@@ -62,9 +62,18 @@ export class AppComponent implements OnInit {
   updateFilter() {
     this.opened = true;
     if (this.keyword.length > 0) {
+      const keywords = this.keyword.split(' ');
       this.filteredList = this.itemList.filter(item => {
-        return (item.srg.includes(this.keyword)) ||
-          (item.name !== undefined && item.name.includes(this.keyword));
+        for (const keyword of keywords) {
+          if (!item.srg.toLowerCase().includes(keyword) &&
+            !item.name.toLowerCase().includes(keyword) &&
+            !item.path.toLowerCase().includes(keyword)) {
+            return false;
+          }
+        }
+        return true;
+        // return (item.srg.includes(this.keyword)) ||
+        //   (item.name !== undefined && item.name.includes(this.keyword));
       });
     } else {
       this.filteredList = Array.from(this.itemList);
