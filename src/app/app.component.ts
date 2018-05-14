@@ -2,7 +2,7 @@ import {Component, HostListener, OnInit, Pipe, PipeTransform, ViewChild} from '@
 import {forkJoin} from 'rxjs/observable/forkJoin';
 import {HttpClient} from '@angular/common/http';
 import {Parser} from './parser';
-import {CONST, FD, MD, PM, Utils} from './mcp';
+import {CONST, FD, MD, Utils} from './mcp';
 import {ObservableMedia} from '@angular/flex-layout';
 import {MatDrawer, MatSnackBar} from '@angular/material';
 import {VirtualScrollComponent} from 'angular2-virtual-scroll';
@@ -16,9 +16,9 @@ export class AppComponent implements OnInit {
   public opened = true;
   @ViewChild('drawer') drawerRef: MatDrawer;
   @ViewChild(VirtualScrollComponent) virtualScroll: VirtualScrollComponent;
-  private itemList: (MD | FD | PM)[];
-  public filteredList: (MD | FD | PM)[];
-  public selectedItem: MD | FD | PM;
+  private itemList: (MD | FD)[];
+  public filteredList: (MD | FD)[];
+  public selectedItem: MD | FD;
   public keyword = '';
   public clientHeight = document.body.clientHeight;
   public sideMapping = CONST.sideMapping;
