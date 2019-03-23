@@ -7,43 +7,59 @@
   mat-toolbar {
     font: unset;
     padding-left: 4px;
+
     mat-form-field {
       flex: 1;
     }
   }
+
   mat-drawer-container {
     flex: 1;
     height: 100%;
     width: 100%;
     display: flex;
+
     mat-drawer {
-      mat-spinner{
+      mat-spinner {
         margin: auto;
       }
+
       mat-nav-list {
         padding-top: 0;
-        mat-list-item {
-          mat-icon {
+        height: 100%;
+
+        cdk-virtual-scroll-viewport {
+          height: 100%;
+
+          mat-list-item {
+            mat-icon {
+            }
           }
         }
       }
     }
+
     mat-drawer.full-width {
       width: 100%;
     }
+
     mat-drawer.fix-width {
       width: 400px;
     }
+
     mat-drawer-content {
       flex: 1;
       padding: 16px;
+
       mat-list {
         margin-bottom: 64px;
+
         mat-list-item {
           overflow-x: auto;
           overflow-y: hidden;
           height: unset;
           margin-bottom: 12px;
+
           pre {
             margin: 0 0;
           }

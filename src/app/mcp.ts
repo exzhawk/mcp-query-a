@@ -61,7 +61,7 @@ export class PM {
 export class CONST {
   static sideMapping = new Map([[-1, 'Unknown'], [0, 'Client'], [1, 'Server'], [2, 'Both']]);
   static mcpVersions = [
-    {mc: '1.12', mcp: 'snapshot-20180514'},
+    {mc: '1.12', mcp: 'snapshot-20180814'},
     {mc: '1.11.2', mcp: 'stable-32'},
     {mc: '1.10', mcp: 'stable-29'},
     {mc: '1.9.4', mcp: 'stable-26'},

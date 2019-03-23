@@ -22,6 +22,7 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import {environment} from '../environments/environment';
     FlexLayoutModule,
     VirtualScrollModule,
     ClipboardModule,
+    ScrollingModule,
   ],
   providers: [
     HttpClientModule,

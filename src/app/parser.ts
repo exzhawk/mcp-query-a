@@ -78,7 +78,7 @@ export class Parser {
       fields.sort(this.sortBySrg),
       constructors.sort(this.sortBySrg),
       // pms.sort(this.sortBySrg),
-      );
+    );
   }
 
   static parseParams(paramsString: string): string[] {

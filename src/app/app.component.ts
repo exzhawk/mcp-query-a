@@ -1,11 +1,10 @@
-import {Component, HostListener, OnInit, Pipe, PipeTransform, ViewChild} from '@angular/core';
+import {Component, OnInit, Pipe, PipeTransform, ViewChild} from '@angular/core';
 import {forkJoin} from 'rxjs/observable/forkJoin';
 import {HttpClient} from '@angular/common/http';
 import {Parser} from './parser';
 import {CONST, FD, MD, Utils} from './mcp';
-import {ObservableMedia} from '@angular/flex-layout';
+import {MediaObserver} from '@angular/flex-layout';
 import {MatDrawer, MatSnackBar} from '@angular/material';
-import {VirtualScrollComponent} from 'angular2-virtual-scroll';
 
 @Component({
   selector: 'app-root',
@@ -15,19 +14,17 @@ import {VirtualScrollComponent} from 'angular2-virtual-scroll';
 export class AppComponent implements OnInit {
   public opened = true;
   @ViewChild('drawer') drawerRef: MatDrawer;
-  @ViewChild(VirtualScrollComponent) virtualScroll: VirtualScrollComponent;
   private itemList: (MD | FD)[];
   public filteredList: (MD | FD)[];
   public selectedItem: MD | FD;
   public keyword = '';
-  public clientHeight = document.body.clientHeight;
   public sideMapping = CONST.sideMapping;
   public mcVersion: string;
   public mcpVersion: string;
   public mcpVersions = CONST.mcpVersions;
 
   constructor(private http: HttpClient,
-              private media: ObservableMedia,
+              private media: MediaObserver,
               private snackBar: MatSnackBar) {
   }
 
@@ -62,7 +59,7 @@ export class AppComponent implements OnInit {
   updateFilter() {
     this.opened = true;
     if (this.keyword.length > 0) {
-      const keywords = this.keyword.split(' ');
+      const keywords = this.keyword.split(' ').map(k => k.toLowerCase());
       this.filteredList = this.itemList.filter(item => {
         for (const keyword of keywords) {
           if (!item.srg.toLowerCase().includes(keyword) &&
@@ -115,14 +112,6 @@ export class AppComponent implements OnInit {
   updateSavedVer() {
     localStorage.setItem('mcVersion', this.mcVersion);
     localStorage.setItem('mcpVersion', this.mcpVersion);
-  }
-
-  @HostListener('window:resize')
-  onResize() {
-    if (this.virtualScroll) {
-      this.clientHeight = document.body.clientHeight;
-      this.virtualScroll.refresh();
-    }
   }
 }
 
