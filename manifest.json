@@ -1,0 +1,15 @@
+{
+  "short_name": "MCP Query",
+  "name": "MCP Query App",
+  "start_url": "/",
+  "theme_color": "#f48c5b",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

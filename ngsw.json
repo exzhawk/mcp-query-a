@@ -1,0 +1,55 @@
+{
+  "configVersion": 1,
+  "timestamp": 1556832846039,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/MaterialIcons-Regular.586090b38a233ce0201f.ttf",
+        "/MaterialIcons-Regular.9219a80f0478e0bfdee5.woff",
+        "/MaterialIcons-Regular.b661c28b0f28606a9672.eot",
+        "/MaterialIcons-Regular.bca3a1873ac988faff08.woff2",
+        "/favicon.ico",
+        "/index.html"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/MaterialIcons-Regular.586090b38a233ce0201f.ttf": "f28a6dc90c580c0731b480870ac464f7efbb371c",
+    "/MaterialIcons-Regular.9219a80f0478e0bfdee5.woff": "961be32ccfaf5d6ab034c2a317d5c6dbcd7740d9",
+    "/MaterialIcons-Regular.b661c28b0f28606a9672.eot": "550418c2934a2289bccd3cdf5df5459fa6f830a5",
+    "/MaterialIcons-Regular.bca3a1873ac988faff08.woff2": "9b824f4d8e852dbaec8c4c20b02b7dba4757b4ce",
+    "/favicon.ico": "a70b5bca079e13e055f997cfecadfc65f0dbe565",
+    "/index.html": "f30c88c21083a93ca0b66ee331d58803e6c3eea6"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
