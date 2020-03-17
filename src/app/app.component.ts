@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   public mcpVersion: string;
   public mcpVersions = CONST.mcpVersions;
 
+
   constructor(private http: HttpClient,
               private media: MediaObserver,
               private snackBar: MatSnackBar) {
@@ -36,8 +37,8 @@ export class AppComponent implements OnInit {
       this.mcVersion = mcVersionSaved;
       this.mcpVersion = mcpVersionSaved;
     } else {
-      this.mcVersion = this.mcpVersions[0].mc;
-      this.mcpVersion = this.mcpVersions[0].mcp;
+      this.mcVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mc;
+      this.mcpVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mcp;
       this.updateSavedVer();
       console.log('not saved');
     }
@@ -64,7 +65,8 @@ export class AppComponent implements OnInit {
         for (const keyword of keywords) {
           if (!item.srg.toLowerCase().includes(keyword) &&
             !item.name.toLowerCase().includes(keyword) &&
-            !item.path.toLowerCase().includes(keyword)) {
+            !item.path.toLowerCase().includes(keyword) &&
+            !(item.path + '.' + item.name).toLowerCase().includes(keyword)) {
             return false;
           }
         }
