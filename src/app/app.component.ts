@@ -13,7 +13,7 @@ import {MatDrawer, MatSnackBar} from '@angular/material';
 })
 export class AppComponent implements OnInit {
   public opened = true;
-  @ViewChild('drawer') drawerRef: MatDrawer;
+  @ViewChild('drawer', { static: true }) drawerRef: MatDrawer;
   private itemList: (MD | FD)[];
   public filteredList: (MD | FD)[];
   public selectedItem: MD | FD;
