@@ -14,7 +14,8 @@
           "/*.woff",
           "/*.woff2",
           "/*.ttf",
-          "/*.eot"
+          "/*.eot",
+          "/manifest.webmanifest"
         ]
       }
     },

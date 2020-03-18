@@ -4,7 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {Parser} from './parser';
 import {CONST, FD, MD, Utils} from './mcp';
 import {MediaObserver} from '@angular/flex-layout';
-import {MatDrawer, MatSnackBar} from '@angular/material';
+import {MatDrawer} from '@angular/material/sidenav';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
