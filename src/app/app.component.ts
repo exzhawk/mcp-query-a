@@ -2,7 +2,7 @@ import {Component, OnInit, Pipe, PipeTransform, ViewChild} from '@angular/core';
 import {forkJoin} from 'rxjs/observable/forkJoin';
 import {HttpClient} from '@angular/common/http';
 import {Parser} from './parser';
-import {CONST, FD, MD, Utils} from './mcp';
+import {CONST, FD, MD, Utils, Version} from './mcp';
 import {MediaObserver} from '@angular/flex-layout';
 import {MatDrawer} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -14,7 +14,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class AppComponent implements OnInit {
   public opened = true;
-  @ViewChild('drawer', { static: true }) drawerRef: MatDrawer;
+  @ViewChild('drawer', {static: true}) drawerRef: MatDrawer;
   private itemList: (MD | FD)[];
   public filteredList: (MD | FD)[];
   public selectedItem: MD | FD;
@@ -22,7 +22,8 @@ export class AppComponent implements OnInit {
   public sideMapping = CONST.sideMapping;
   public mcVersion: string;
   public mcpVersion: string;
-  public mcpVersions = CONST.mcpVersions;
+  // public mcpVersions = CONST.mcpVersions;
+  public mcpVersions: Version[] = [];
 
 
   constructor(private http: HttpClient,
@@ -31,30 +32,52 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const mcVersionSaved = localStorage.getItem('mcVersion');
-    const mcpVersionSaved = localStorage.getItem('mcpVersion');
-    if (mcVersionSaved !== null && mcpVersionSaved !== null &&
-      this.mcpVersions.filter(v => v.mc === mcVersionSaved && v.mcp === mcpVersionSaved).length > 0) {
-      this.mcVersion = mcVersionSaved;
-      this.mcpVersion = mcpVersionSaved;
-    } else {
-      this.mcVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mc;
-      this.mcpVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mcp;
-      this.updateSavedVer();
-      console.log('not saved');
-    }
+    this.http.get('assets/mcp/versions.json').subscribe((versions: Version[]) => {
+      this.mcpVersions = versions;
 
-    const urls = [`assets/mcp/${this.mcVersion}/joined.exc`,
-      `assets/mcp/${this.mcVersion}/joined.srg`,
-      `assets/mcp/${this.mcVersion}/${this.mcpVersion}/fields.csv`,
-      `assets/mcp/${this.mcVersion}/${this.mcpVersion}/methods.csv`,
-      `assets/mcp/${this.mcVersion}/${this.mcpVersion}/params.csv`];
-    forkJoin(
-      urls.map(url => this.http.get(url, {responseType: 'text'}))
-    ).subscribe(([joined_exc, joined_srg, fields_csv, methods_csv, params_csv]) => {
-      this.itemList = Parser.parse(joined_exc, joined_srg, fields_csv, methods_csv, params_csv);
-      this.updateSelected();
-      this.updateFilter();
+      const mcVersionSaved = localStorage.getItem('mcVersion');
+      const mcpVersionSaved = localStorage.getItem('mcpVersion');
+      if (mcVersionSaved !== null && mcpVersionSaved !== null &&
+        this.mcpVersions.filter(v => v.mc === mcVersionSaved && v.mcp === mcpVersionSaved).length > 0) {
+        this.mcVersion = mcVersionSaved;
+        this.mcpVersion = mcpVersionSaved;
+      } else {
+        this.mcVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mc;
+        this.mcpVersion = this.mcpVersions[CONST.defaultMcpVersionIndex].mcp;
+        this.updateSavedVer();
+        console.log('not saved');
+      }
+
+      const mcpConfigUrls = [
+        `assets/mcp/${this.mcVersion}/constructors.txt`,
+        `assets/mcp/${this.mcVersion}/joined.tsrg`,
+      ];
+      const mcpConfigUrlsLe112 = [
+        `assets/mcp/${this.mcVersion}/joined.exc`,
+        `assets/mcp/${this.mcVersion}/joined.srg`,
+      ];
+      const mcpMappingUrls = [
+        `assets/mcp/${this.mcVersion}/${this.mcpVersion}/fields.csv`,
+        `assets/mcp/${this.mcVersion}/${this.mcpVersion}/methods.csv`,
+        `assets/mcp/${this.mcVersion}/${this.mcpVersion}/params.csv`,
+      ];
+      forkJoin(
+        mcpConfigUrls.map(url => this.http.get(url, {responseType: 'text'})))
+        .subscribe(([constructorTxt, joinedTsrg]) => {
+          forkJoin(mcpMappingUrls.map(url => this.http.get(url, {responseType: 'text'})))
+            .subscribe(([fieldsCsv, methodsCsv, paramsCsv]) => {
+              this.itemList = Parser.parse(fieldsCsv, methodsCsv, paramsCsv, constructorTxt, joinedTsrg);
+              this.updateSelected();
+              this.updateFilter();
+            });
+        }, () => {
+          forkJoin([].concat(mcpMappingUrls, mcpConfigUrlsLe112).map(url => this.http.get(url, {responseType: 'text'})))
+            .subscribe(([fieldsCsv, methodsCsv, paramsCsv, joinedExc, joinedSrg]) => {
+              this.itemList = Parser.parseLe112(fieldsCsv, methodsCsv, paramsCsv, joinedExc, joinedSrg);
+              this.updateSelected();
+              this.updateFilter();
+            });
+        });
     });
   }
 
@@ -101,7 +124,7 @@ export class AppComponent implements OnInit {
   }
 
   updateVer(ver: { mc: string; mcp: string }) {
-    if (this.mcpVersion !== ver.mcp) {
+    if (this.mcpVersion !== ver.mcp || this.mcVersion !== ver.mc) {
       this.mcVersion = ver.mc;
       this.mcpVersion = ver.mcp;
       this.itemList = [];

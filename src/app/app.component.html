@@ -85,8 +85,7 @@
           <h3 matSubheader>Access Transformer</h3>
           <mat-list-item ngxClipboard [style.cursor]="'pointer'" (click)="onCopied()"
                          cbContent="public {{selectedItem.path}} {{selectedItem.srg}}({{selectedItem.params.join('')}}){{selectedItem.ret}} #{{selectedItem.name}}{{'\n'}}">
-            <pre>public {{selectedItem.path}}{{selectedItem.init ? '.' + selectedItem.name : ''}} {{selectedItem.srg}}
-              ({{selectedItem.params.join('')}}){{selectedItem.ret}} #{{selectedItem.name}}</pre>
+            <pre>public {{selectedItem.path}}{{selectedItem.init ? '.' + selectedItem.name : ''}} {{selectedItem.srg}}({{selectedItem.params.join('')}}){{selectedItem.ret}} #{{selectedItem.name}}</pre>
           </mat-list-item>
         </div>
         <div *ngIf="selectedItem.type==='Field'">
