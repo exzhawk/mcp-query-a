@@ -22,7 +22,6 @@ export class AppComponent implements OnInit {
   public sideMapping = CONST.sideMapping;
   public mcVersion: string;
   public mcpVersion: string;
-  // public mcpVersions = CONST.mcpVersions;
   public mcpVersions: Version[] = [];
 
 

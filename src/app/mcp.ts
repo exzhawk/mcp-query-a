@@ -65,16 +65,6 @@ export class Version {
 
 export class CONST {
   static sideMapping = new Map([[-1, 'Unknown'], [0, 'Client'], [1, 'Server'], [2, 'Both']]);
-  static mcpVersions = [
-    {mc: '1.12.2', mcp: 'stable-39'},
-    // {mc: '1.13.2', mcp: 'snapshot-20190323'},
-    {mc: '1.12', mcp: 'stable-39'},
-    {mc: '1.11.2', mcp: 'stable-32'},
-    {mc: '1.10', mcp: 'stable-29'},
-    {mc: '1.9.4', mcp: 'stable-26'},
-    {mc: '1.8.8', mcp: 'stable-20'},
-    {mc: '1.7.10', mcp: 'stable-12'},
-  ];
   static defaultMcpVersionIndex = 0;
 }
 
